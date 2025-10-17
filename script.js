@@ -45,4 +45,16 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = 'translateY(0) scale(1)';
         });
     });
+
+    // 初始化樱花飘落特效（可调参数）
+    if (window.initSakura) {
+        window.initSakura({
+            count: 36,        // 花瓣数量
+            zIndex: 1,        // 画布层级，容器会在上层
+            speedY: 0.8,      // 下落基础速度
+            speedYVar: 1.0,   // 下落速度波动
+            speedXVar: 0.8,   // 水平漂移幅度
+            rotSpeedVar: 0.03 // 旋转速度波动
+        });
+    }
 });

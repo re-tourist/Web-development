@@ -37,6 +37,8 @@ body.home-right {
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.5s ease;
+    position: relative;
+    z-index: 2; /* 确保内容在樱花画布之上 */
 }
 
 .container.loaded {
