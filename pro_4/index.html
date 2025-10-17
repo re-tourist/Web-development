@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Password Generator</title>
+  <!-- Font Awesome per notes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-bg">
+    <div class="card">
+      <h1 class="title">Password Generator</h1>
+
+      <!-- password display + copy -->
+      <div class="display-row">
+        <input id="password" type="text" placeholder="%3d:=8hk]" readonly />
+        <button id="copy-btn" aria-label="Copy" class="icon-btn"><i class="far fa-copy"></i></button>
+      </div>
+
+      <!-- controls -->
+      <div class="controls">
+        <div class="control-row">
+          <label for="length">Password Length</label>
+          <div class="length-pill" id="length-value">9</div>
+        </div>
+        <input id="length" type="range" min="4" max="32" value="9" />
+
+        <div class="option-row">
+          <span>Include Uppercase</span>
+          <input id="uppercase" type="checkbox" checked />
+        </div>
+        <div class="option-row">
+          <span>Include Lowercase</span>
+          <input id="lowercase" type="checkbox" checked />
+        </div>
+        <div class="option-row">
+          <span>Include Numbers</span>
+          <input id="numbers" type="checkbox" checked />
+        </div>
+        <div class="option-row">
+          <span>Include Symbols</span>
+          <input id="symbols" type="checkbox" checked />
+        </div>
+      </div>
+
+      <button id="generate-btn" class="generate-btn"><i class="fa-solid fa-key"></i> Generate Password</button>
+
+      <!-- strength -->
+      <div class="strength-container">
+        <p>Password Strength:</p>
+        <span id="strength-label">Medium</span>
+      </div>
+      <div class="strength-bg">
+        <div class="strength-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+  </body>
+  </html>

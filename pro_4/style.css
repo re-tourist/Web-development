@@ -1,0 +1,136 @@
+/* 页面背景（深蓝到紫的渐变） */
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.page-bg {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(1200px 600px at 50% -200px, #3e4a7f, #2b3a59 40%, #263452 70%);
+  padding: 48px 20px;
+}
+
+/* 白色卡片 */
+.card {
+  width: 680px;
+  max-width: 92vw;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.25);
+  padding: 36px 32px 28px;
+}
+
+/* 标题以及伪元素下划线 */
+.title {
+  margin: 0 0 18px;
+  font-size: 44px;
+  font-weight: 800;
+  color: #285b6f; /* 深青色标题 */
+  text-align: center;
+  position: relative;
+}
+.title::after {
+  content: "";
+  display: block;
+  width: 240px;
+  height: 6px;
+  margin: 10px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2e5a73, #7b6ccf);
+}
+
+/* 密码显示与复制按钮 */
+.display-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 22px;
+}
+#password {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1.5px solid #e6edf3;
+  border-radius: 16px;
+  background: #f7fbff;
+  font-size: 18px;
+  color: #3a4a5a;
+}
+.icon-btn {
+  height: 52px;
+  width: 52px;
+  border: 1.5px solid #e6edf3;
+  border-radius: 14px;
+  background: #f7fbff;
+  cursor: pointer;
+}
+.icon-btn i { font-size: 20px; color: #607d8b; }
+
+/* 控件容器与每行 */
+.controls {
+  background: #f6fafc;
+  border: 1.5px solid #e6edf3;
+  border-radius: 18px;
+  padding: 18px 18px 20px;
+}
+.control-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.control-row label { font-weight: 600; color: #334155; }
+.length-pill {
+  min-width: 44px; height: 36px; line-height: 36px;
+  border-radius: 10px; text-align: center;
+  background: #eef3f7; color: #3a4a5a; font-weight: 700;
+}
+
+/* 滑块样式（WebKit） */
+#length { width: 100%; margin-bottom: 12px; }
+#length::-webkit-slider-runnable-track { height: 8px; background: #e6edf3; border-radius: 999px; }
+#length::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #2e5a73; margin-top: -7px; border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+.option-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; color: #334155; font-size: 18px;
+}
+.option-row input[type="checkbox"] {
+  width: 26px; height: 26px; border-radius: 8px; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  border: 2px solid #d7e1ea; background: #fff; position: relative;
+}
+.option-row input[type="checkbox"]:checked { background: #2e5a73; border-color: #2e5a73; }
+.option-row input[type="checkbox"]:checked::after {
+  content: "\f00c"; /* fa-check */
+  font-family: "Font Awesome 6 Free"; font-weight: 900; color: #fff;
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+}
+
+/* 生成按钮（紫到靛渐变） */
+.generate-btn {
+  margin: 16px 0 18px; width: 100%;
+  padding: 16px 20px; border: none; border-radius: 14px; color: #fff;
+  background: linear-gradient(90deg, #514c8f, #3f3a77);
+  box-shadow: 0 10px 22px rgba(79, 74, 141, 0.35);
+  font-size: 20px; font-weight: 700; cursor: pointer;
+}
+.generate-btn i { margin-right: 10px; }
+
+/* 强度条 */
+.strength-container { display: flex; justify-content: space-between; align-items: center; color: #3a4a5a; }
+.strength-container p { margin: 0; }
+.strength-bg { width: 100%; height: 10px; background: #e9eef3; border-radius: 999px; overflow: hidden; margin-top: 10px; }
+.strength-bar { width: 50%; height: 100%; background: #fbd38d; transition: width .25s ease, background-color .25s ease; }
+
+@media (max-width: 520px){
+  .title { font-size: 36px; }
+}

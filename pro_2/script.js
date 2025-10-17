@@ -41,9 +41,13 @@ function updateItemsCount() {
 }
 
 function checkEmptyState() {
+  // 基于当前筛选结果来决定是否显示"No tasks here yet"
   const filteredTodos = filterTodos(currentFilter);
-  if (filteredTodos?.length === 0) emptyState.classList.remove("hidden");
-  else emptyState.classList.add("hidden");
+  if (filteredTodos.length === 0) {
+    emptyState.classList.remove("hidden");
+  } else {
+    emptyState.classList.add("hidden");
+  }
 }
 
 // 重新渲染任务列表
@@ -143,6 +147,7 @@ function setActiveFilter(filter) {
     }
   });
   renderTodos();
+  checkEmptyState(); // 确保筛选器切换时也检查空状态
 }
 
 function setDate() {
@@ -176,5 +181,6 @@ filters.forEach((filter) => {
 window.addEventListener("DOMContentLoaded", () => {
   loadTodos();
   updateItemsCount();
+  checkEmptyState();
   setDate();
 });

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>项目4 · 测试题目</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- 开始页 -->
+    <div class="screen active" id="start-screen">
+      <div class="start-card">
+        <h1 class="start-title">Quiz Time!</h1>
+        <p class="start-subtitle">Test your knowledge with these fun questions</p>
+        <button id="start-btn" class="primary-btn start-btn">Start Quiz</button>
+      </div>
+    </div>
+
+    <!-- 题目页 -->
+    <div class="screen" id="quiz-screen">
+      <div class="quiz-card">
+        <h1 class="question-title" id="question-text"></h1>
+
+        <div class="meta-row">
+          <div class="meta-left">Question <span id="current-question">1</span> of <span id="total-questions">0</span></div>
+          <div class="meta-right">Score: <span id="score">0</span></div>
+        </div>
+
+        <div id="answers-container" class="answers-container"></div>
+
+        <div class="progress-bar" aria-label="Progress">
+          <div id="progress" class="progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 结果页 -->
+    <div class="screen" id="result-screen">
+      <div class="result-card">
+        <h1 class="result-title">Quiz Results</h1>
+        <div class="result-box">
+          <p class="result-summary">You scored <span id="final-score">0</span> out of <span id="max-score">0</span></p>
+          <p id="result-message" class="result-message accent"></p>
+        </div>
+        <button id="restart-btn" class="primary-btn restart-btn">Restart Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
