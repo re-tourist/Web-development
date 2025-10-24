@@ -27,18 +27,20 @@ body.home-right {
     padding-right: 6vw;
 }
 
+/* 恢复右侧单列：容器宽度收窄 */
 .container {
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
     padding: 30px;
-    max-width: 400px;
+    max-width: 400px; /* 恢复右侧单列宽度 */
     width: 100%;
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.5s ease;
     position: relative;
     z-index: 2; /* 确保内容在樱花画布之上 */
+    max-width: 500px; // 扩大右侧栏水平宽度
 }
 
 .container.loaded {
@@ -80,6 +82,7 @@ h1 {
     text-align: center;
 }
 
+/* 项目区改为单列垂直排列 */
 .projects-grid {
     display: flex;
     flex-direction: column;
@@ -89,25 +92,60 @@ h1 {
 .project-card {
     background: #f8f9fa;
     border-radius: 12px;
-    padding: 20px;
+    padding: 16px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     border: 2px solid transparent;
     opacity: 0;
     transform: translateY(20px);
++    cursor: pointer;
 }
 
-.project-card.loaded {
-    opacity: 1;
-    transform: translateY(0);
-}
+.project-card.loaded { opacity: 1; transform: translateY(0); }
 
 .project-card:hover {
-    transform: translateY(-3px);
+-    transform: translateY(-3px);
++    transform: translateY(-6px); /* 垂直向上浮动 */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     border-color: #667eea;
 }
 
+/* 预览区：嵌入子页面 */
+.card-preview {
+    width: 100%;
+    aspect-ratio: 4 / 4;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+.card-preview iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    pointer-events: auto; // 允许在预览中滚动与交互
+}
+
+/* 卡片标题：居中 */
+.card-title {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+}
+
+/* 主页标题样式优化 */
+.portfolio-title { font-size: 2rem; font-weight: 800; color: #333; text-align: center; }
+
+@media (max-width: 768px) {
+    .container { padding: 20px; }
+-    h1 { font-size: 2rem; }
++    h1 { font-size: 1.6rem; }
+    .projects-grid { gap: 16px; }
++    .card-preview { aspect-ratio: 4 / 3; /* 单列预览更紧凑 */ }
+}
 .project-card h2 {
     color: #333;
     margin-bottom: 10px;
@@ -158,3 +196,69 @@ h1 {
         gap: 20px;
     }
 }
+
+/* 全局覆盖：右侧贴边与更完整预览 */
+body.home-right { padding-right: 0 !important; }
+.container { max-width: 550px !important; margin-left: auto !important; margin-right: 0 !important; }
+/* 提升预览高度，显示更多内容 */
+.card-preview { aspect-ratio: 1 / 1 !important; min-height: 600px; }
+/* 预览滚动条更细、更柔和 */
+.card-preview iframe { scrollbar-width: thin; scrollbar-color: rgba(102,126,234,0.6) transparent; }
+.card-preview iframe::-webkit-scrollbar { width: 6px; }
+.card-preview iframe::-webkit-scrollbar-thumb { background: rgba(102,126,234,0.6); border-radius: 3px; }
+.card-preview iframe::-webkit-scrollbar-track { background: rgba(255,255,255,0.2); }
+/* 移动端避免过高：恢复较小比例 */
+@media (max-width: 768px) {
+  .card-preview { aspect-ratio: 4 / 3 !important; min-height: 360px; }
+}
+.card-preview { aspect-ratio: 4 / 3 !important; }
+
+
+/* 折叠按钮样式 */
+.collapse-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.95);
+  color: #333;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.collapse-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.18); }
+
+/* 仅保留标题的折叠态 */
+.container.collapsed {
+  max-width: 360px !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+.container.collapsed .card-preview,
+.container.collapsed .projects-grid {
+  display: none !important;
+}
+.container.collapsed h1 {
+  margin-bottom: 8px !important;
+}
+.container.collapsed .collapse-btn {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .container.collapsed {
+    max-width: 88vw !important;
+  }
+}
+
+.container.collapsed .project-card { padding: 12px; }

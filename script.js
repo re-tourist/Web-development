@@ -21,40 +21,63 @@ function openProject(projectName) {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
-    // 页面加载动画
     const container = document.querySelector('.container');
     const projectCards = document.querySelectorAll('.project-card');
-    
-    setTimeout(() => {
-        container.classList.add('loaded');
-    }, 300);
-    
+    const toggleBtn = document.getElementById('toggleButton');
+
+    setTimeout(() => { container.classList.add('loaded'); }, 300);
     projectCards.forEach((card, index) => {
-        setTimeout(() => {
-            card.classList.add('loaded');
-        }, 500 + index * 100);
+        setTimeout(() => { card.classList.add('loaded'); }, 500 + index * 100);
     });
-    
-    // 项目卡片悬停效果增强
+
+    // 悬停仅垂直上浮
     projectCards.forEach(card => {
         card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-3px) scale(1.02)';
+            this.style.transform = 'translateY(-6px)';
         });
-        
         card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
+            this.style.transform = 'translateY(0)';
+        });
+
+        // 点击/回车打开对应项目
+        card.addEventListener('click', () => {
+            const name = card.getAttribute('data-project');
+            if (name) openProject(name);
+        });
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const name = card.getAttribute('data-project');
+                if (name) openProject(name);
+            }
         });
     });
 
-    // 初始化樱花飘落特效（可调参数）
+    // 折叠/展开预览：只显示标题
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            container.classList.toggle('collapsed');
+            const collapsed = container.classList.contains('collapsed');
+            toggleBtn.setAttribute('aria-pressed', collapsed ? 'true' : 'false');
+            toggleBtn.title = collapsed ? '展开预览' : '折叠预览';
+        });
+        toggleBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleBtn.click();
+            }
+        });
+    }
+
+    // 初始化樱花飘落特效（保留）
     if (window.initSakura) {
         window.initSakura({
-            count: 36,        // 花瓣数量
-            zIndex: 1,        // 画布层级，容器会在上层
-            speedY: 0.8,      // 下落基础速度
-            speedYVar: 1.0,   // 下落速度波动
-            speedXVar: 0.8,   // 水平漂移幅度
-            rotSpeedVar: 0.03 // 旋转速度波动
+            count: 36,
+            zIndex: 1,
+            speedY: 0.8,
+            speedYVar: 1.0,
+            speedXVar: 0.8,
+            rotSpeedVar: 0.03
         });
     }
 });

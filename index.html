@@ -8,32 +8,34 @@
 </head>
 <body class="home-right">
     <div class="container">
-        <h1>我的项目</h1>
+        <button id="toggleButton" class="collapse-btn" aria-label="折叠/展开预览" title="折叠/展开预览">☰</button>
+        <h1>计科2302徐易杰网页作品集</h1>
         <p class="subtitle">选择一个项目开始探索</p>
         
         <div class="projects-grid">
-            <div class="project-card">
-                <h2>1. 注册界面</h2>
-                <p>用户注册系统界面，包含表单验证和用户体验优化</p>
-                <button class="project-btn" onclick="openProject('pro_1')">进入项目</button>
+            <div class="project-card" data-project="pro_1" role="button" tabindex="0" aria-label="进入 项目1 注册界面">
+                <div class="card-preview"><iframe src="pro_1/index.html" title="项目1预览" loading="lazy"></iframe></div>
+                <h3 class="card-title">1. 注册界面</h3>
             </div>
-            
-            <div class="project-card">
-                <h2>2. 待办事项</h2>
-                <p>简洁高效的任务管理工具，帮助你组织日常工作</p>
-                <button class="project-btn" onclick="openProject('pro_2')">进入项目</button>
+        
+            <div class="project-card" data-project="pro_2" role="button" tabindex="0" aria-label="进入 项目2 待办事项">
+                <div class="card-preview"><iframe src="pro_2/index.html" title="项目2预览" loading="lazy"></iframe></div>
+                <h3 class="card-title">2. 待办事项</h3>
             </div>
-
-            <div class="project-card">
-                <h2>3. 测试题目</h2>
-                <p>三屏切换的答题小游戏，含进度条、打分与结果提示</p>
-                <button class="project-btn" onclick="openProject('pro_3')">进入项目</button>
+        
+            <div class="project-card" data-project="pro_3" role="button" tabindex="0" aria-label="进入 项目3 测试题目">
+                <div class="card-preview"><iframe src="pro_3/index.html" title="项目3预览" loading="lazy"></iframe></div>
+                <h3 class="card-title">3. 测试题目</h3>
             </div>
-
-            <div class="project-card">
-                <h2>4. 密码生成器</h2>
-                <p>可选字符类型与长度，支持复制与强度评估的生成器</p>
-                <button class="project-btn" onclick="openProject('pro_4')">进入项目</button>
+        
+            <div class="project-card" data-project="pro_4" role="button" tabindex="0" aria-label="进入 项目4 密码生成器">
+                <div class="card-preview"><iframe src="pro_4/index.html" title="项目4预览" loading="lazy"></iframe></div>
+                <h3 class="card-title">4. 密码生成器</h3>
+            </div>
+        
+            <div class="project-card" data-project="pro_5" role="button" tabindex="0" aria-label="进入 项目5 菜单搜索器">
+                <div class="card-preview"><iframe src="pro_5/index.html" title="项目5预览" loading="lazy"></iframe></div>
+                <h3 class="card-title">5. 菜单搜索器</h3>
             </div>
         </div>
     </div>

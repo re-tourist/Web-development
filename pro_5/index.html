@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>菜单搜索器 · 项目5</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+</head>
+<body>
+  <header class="header">
+    <h1 class="title"><i class="fas fa-utensils title-icon"></i>菜单搜索器</h1>
+    <p class="subtitle">使用 TheMealDB API 搜索并查看菜谱</p>
+    <p class="api-link">Data from <a href="https://www.themealdb.com/api.php" target="_blank" rel="noreferrer noopener">The MealDB</a> <i class="fa-solid fa-hat-chef" aria-hidden="true"></i></p>
+    <div class="search-bar">
+      <input id="search-input" type="text" placeholder="请输入菜名，例如：chicken" />
+      <button id="search-btn" class="btn">
+        <i class="fas fa-search"></i>
+        搜索
+      </button>
+    </div>
+    <p id="result-heading" class="result-heading"></p>
+    <div id="error-container" class="error hidden"></div>
+  </header>
+
+  <main class="content">
+    <!-- 搜索结果：菜单网格列表 -->
+    <section id="meals" class="meals-container" aria-live="polite"></section>
+
+    <!-- 菜单详情面板 -->
+    <section id="meal-details" class="meal-details hidden" aria-hidden="true">
+      <div class="details-header">
+        <button id="back-btn" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+          返回
+        </button>
+      </div>
+      <div class="meal-details-content"><!-- 由脚本注入 --></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
