@@ -1,0 +1,25 @@
+# Node
+node_modules/
+dist/
+.vite-cache/
+.cache/
+
+# Java / Maven
+target/
+*.class
+*.log
+*.iml
+*.jar
+*.war
+.mvn/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Misc
+coverage/
+.DS_Store
+Thumbs.db
+

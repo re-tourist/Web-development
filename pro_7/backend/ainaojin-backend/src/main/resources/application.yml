@@ -1,0 +1,20 @@
+server:
+  port: 8082
+
+# 火山引擎 Ark 配置
+ark:
+  api-key: 66f717fa-00a7-4946-b982-706dd476cc36
+  bot-id: bot-20251128102235-tlfch
+
+# Knife4j 文档配置（OpenAPI3）
+knife4j:
+  enable: true
+  openapi:
+    title: 脑筋急转弯api文档
+    description: AI脑筋急转弯后端接口
+    group:
+      default:
+        group-name: 默认分组
+        api-rule: package
+        api-rule-resources:
+          - com.xyj.ainaojin.controller
