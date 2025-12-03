@@ -6,6 +6,9 @@
         <template #renderItem="{ item }">
           <a-list-item @click="loadHistoryItem(item)" class="history-item">
             <a-list-item-meta :title="`对话 ${item.id}`" :description="formatTime(item.timestamp)" />
+            <div style="margin-left:auto;">
+              <a-button type="link" danger size="small" @click.stop="onDeleteConversation(item)">删除</a-button>
+            </div>
           </a-list-item>
         </template>
       </a-list>
@@ -15,6 +18,8 @@
         <div class="room-title">AI 脑筋急转弯 · 房间号：{{ roomId }}</div>
         <div class="header-actions">
           <a-button @click="onNewConversation">新增对话</a-button>
+          <a-button type="primary" @click="startConversation" :disabled="started || ended">开始</a-button>
+          <a-button danger @click="endConversation" :disabled="ended">结束</a-button>
         </div>
       </a-layout-header>
       <a-layout-content class="content">
@@ -30,8 +35,8 @@
           </div>
         </transition-group>
         <div class="input-row">
-          <a-input v-model:value="input" placeholder="请输入内容" @pressEnter="onSend" />
-          <a-button type="primary" @click="onSend">发送</a-button>
+          <a-input v-model:value="input" placeholder="请输入内容" @pressEnter="onSend" :disabled="!canSend" />
+          <a-button type="primary" @click="onSend" :disabled="!canSend">发送</a-button>
         </div>
       </a-layout-content>
     </a-layout>
@@ -39,10 +44,10 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { chat, initRoom } from '../api/index.js'
-import { loadHistory, saveConversation, findConversation } from '../utils/storage.js'
+import { loadHistory, saveConversation, findConversation, deleteConversation } from '../utils/storage.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -50,6 +55,9 @@ const roomId = ref('')
 const messages = ref([])
 const input = ref('')
 const history = ref([])
+const started = ref(false)
+const ended = ref(false)
+const canSend = computed(() => started.value && !ended.value)
 
 function genRoomId() { return Math.floor(100000 + Math.random() * 900000) }
 
@@ -60,6 +68,7 @@ onMounted(() => {
   const saved = findConversation(roomId.value)
   if (saved) {
     messages.value = saved.messages || []
+    ended.value = !!saved.ended
   } else {
     // 首次进入房间：尝试接受模型的开场白；失败则提示“开始”即可开启
     fetchOpening(roomId.value)
@@ -75,9 +84,16 @@ async function fetchOpening(id) {
   }
 }
 
-function append(role, text, ended=false) {
+function append(role, text, isEnded=false) {
   messages.value.push({ id: Date.now()+Math.random(), role, text })
-  saveConversation(roomId.value, messages.value, ended)
+  saveConversation(roomId.value, messages.value, isEnded)
+  // 立即刷新左侧历史列表，确保结束后立刻可见
+  history.value = loadHistory()
+  if (isEnded) {
+    // 收到后端结束信号时，锁定会话
+    started.value = false
+    ended.value = true
+  }
 }
 
 async function onNewConversation() {
@@ -85,12 +101,26 @@ async function onNewConversation() {
   router.push(`/room/${id}`)
   roomId.value = id
   messages.value = []
+  started.value = false
+  ended.value = false
   await fetchOpening(id)
 }
 
 async function onSend() {
   const val = String(input.value || '').trim()
   if (!val) return
+  // 特殊口令映射到按钮操作
+  if (val === '开始' && !started.value) {
+    input.value = ''
+    await startConversation()
+    return
+  }
+  if (val === '结束') {
+    input.value = ''
+    await endConversation()
+    return
+  }
+  if (!canSend.value) return
   input.value = ''
   append('user', val)
   const res = await chat(roomId.value, val)
@@ -100,11 +130,46 @@ async function onSend() {
 function loadHistoryItem(item) {
   messages.value = item.messages || []
   roomId.value = String(item.id)
+  // 同步当前会话状态，便于控制发送与按钮禁用
+  ended.value = !!item.ended
+  started.value = !ended.value && messages.value.length > 0
 }
 
 function formatTime(ts) {
   const d = new Date(ts)
   return d.toLocaleString()
+}
+
+async function startConversation() {
+  if (ended.value) {
+    // 重新开启新会话：生成新房间或清空状态
+    started.value = false
+    ended.value = false
+  }
+  append('user', '开始')
+  const res = await chat(roomId.value, '开始')
+  started.value = true
+  ended.value = !!res.ended
+  append('ai', res.text, res.ended)
+}
+
+async function endConversation() {
+  append('user', '结束')
+  const res = await chat(roomId.value, '结束')
+  started.value = false
+  ended.value = true
+  append('ai', res.text, true)
+}
+
+function onDeleteConversation(item) {
+  deleteConversation(item.id)
+  history.value = loadHistory()
+  if (String(item.id) === String(roomId.value)) {
+    // 如果删除的是当前会话，重置状态与消息
+    messages.value = []
+    started.value = false
+    ended.value = false
+  }
 }
 </script>
 

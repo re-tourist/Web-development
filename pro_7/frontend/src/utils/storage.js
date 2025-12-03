@@ -28,3 +28,9 @@ export function findConversation(id) {
   const list = loadHistory()
   return list.find((x) => String(x.id) === String(id))
 }
+
+export function deleteConversation(id) {
+  const list = loadHistory()
+  const next = list.filter((x) => String(x.id) !== String(id))
+  localStorage.setItem(KEY, JSON.stringify(next))
+}
