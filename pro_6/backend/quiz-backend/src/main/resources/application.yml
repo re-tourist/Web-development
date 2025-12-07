@@ -1,21 +1,23 @@
 server:
   port: 8080
 
-# 火山引擎 Ark 配置
-ark:
-  api-key: ${ARK_API_KEY:}  # 优先环境变量；也可直接写在此处
-  bot-id: bot-20251005202857-74jzd  # 请替换为你的实际机器人ID
+# ===== 数据源配置（MySQL-only） =====
+spring:
+  datasource:
+    # 强制使用 MySQL；允许通过环境变量覆盖，但不再回退到 H2
+    driver-class-name: ${QUIZ_DB_DRIVER:com.mysql.cj.jdbc.Driver}
+    url: ${QUIZ_DB_URL:jdbc:mysql://localhost:3306/quiz?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true}
+    username: ${QUIZ_DB_USERNAME:root}
+    password: ${QUIZ_DB_PASSWORD:}
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+      schema-locations: classpath:schema.sql
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
 
-# Knife4j 文档配置（OpenAPI3）
-knife4j:
-  enable: true
-  openapi:
-    title: 脑筋急转弯api文档
-    description: AI脑筋急转弯后端接口
-    group:
-      default:
-        group-name: 默认分组
-        api-rule: package
-        api-rule-resources:
-          - com.tfzhang.ainaojin.controller
-
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true

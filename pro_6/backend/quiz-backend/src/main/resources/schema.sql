@@ -1,0 +1,12 @@
+-- 初始化 Quiz 数据库表（MyBatis 使用）
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  userName VARCHAR(64) NOT NULL,
+  userPassword VARCHAR(255) NOT NULL,
+  isDelete TINYINT NOT NULL DEFAULT 0,
+  userRole INT NOT NULL DEFAULT 0,
+  createTime DATETIME NOT NULL,
+  updateTime DATETIME NOT NULL,
+  UNIQUE KEY uk_userName (userName)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+

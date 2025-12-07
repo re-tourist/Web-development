@@ -42,7 +42,7 @@
       <el-pagination
         background
         layout="prev, pager, next, jumper"
-        :total="filtered.length"
+        :total="total"
         :page-size="pageSize"
         :current-page="page"
         @current-change="onPageChange" />
@@ -84,8 +84,10 @@ export default {
       questions: [],
       filters: { keyword: '' },
       filtered: [],
+      total: 0,
       page: 1,
       pageSize: 10,
+      serverPaging: true,
       dialogVisible: false,
       isEdit: false,
       form: { id: null, title: '', options: [], answer: '' },
@@ -99,41 +101,68 @@ export default {
   },
   computed: {
     paged() {
+      if (this.serverPaging) {
+        // 服务端分页：filtered 已经是当前页数据
+        return this.filtered
+      }
+      // 本地分页：用于关键字查询后的前端分页
       const start = (this.page - 1) * this.pageSize
       return this.filtered.slice(start, start + this.pageSize)
     }
   },
   created() {
-    this.seed(400)
-    this.query()
+    this.fetchPage()
   },
   methods: {
-    seed(n) {
-      const optsList = [
-        ['巴黎', '伦敦', '柏林', '罗马'],
-        ['北京', '上海', '广州', '深圳'],
-        ['红色', '蓝色', '绿色', '黄色']
-      ]
-      const arr = []
-      for (let i = 1; i <= n; i++) {
-        const opts = optsList[i % optsList.length]
-        arr.push({ id: i, title: '法国的首都是什么？', options: opts, answer: opts[0] })
+    async fetchPage() {
+      try {
+        const client = (await import('@/api/client')).default
+        const res = await client.get('/questions', { params: { page: this.page, pageSize: this.pageSize } })
+        const { items, total } = res.data || { items: [], total: 0 }
+        this.questions = Array.isArray(items) ? items : []
+        this.filtered = this.questions
+        this.total = Number.isFinite(total) ? total : this.questions.length
+        this.serverPaging = true
+      } catch (err) {
+        console.error('Error fetching questions:', err)
+        this.$message.error('获取题目失败')
       }
-      this.questions = arr
     },
     matches(q) {
       const k = (this.filters.keyword || '').trim()
       return !k || q.title.includes(k)
     },
-    query() {
-      this.filtered = this.questions.filter(q => this.matches(q))
-      this.page = 1
+    async query() {
+      const k = (this.filters.keyword || '').trim()
+      if (!k) {
+        this.page = 1
+        await this.fetchPage()
+        return
+      }
+      try {
+        const client = (await import('@/api/client')).default
+        const res = await client.get('/findQuestion', { params: { keyword: k } })
+        const items = res.data || []
+        this.questions = Array.isArray(items) ? items : []
+        this.filtered = this.questions
+        this.total = this.filtered.length
+        this.page = 1
+        this.serverPaging = false
+      } catch (err) {
+        console.error('Error searching questions:', err)
+        this.$message.error('查询失败')
+      }
     },
     reset() {
       this.filters.keyword = ''
       this.query()
     },
-    onPageChange(p) { this.page = p },
+    onPageChange(p) {
+      this.page = p
+      if (this.serverPaging) {
+        this.fetchPage()
+      }
+    },
     openAdd() {
       this.isEdit = false
       this.form = { id: null, title: '', options: [], answer: '' }
@@ -146,14 +175,19 @@ export default {
       this.optionInput = ''
       this.dialogVisible = true
     },
-    remove(row) {
-      this.$confirm(`确定删除题目 ${row.title} 吗?`, '提示', { type: 'warning' })
-        .then(() => {
-          this.questions = this.questions.filter(q => q.id !== row.id)
-          this.query()
-          this.$message.success('删除成功')
-        })
-        .catch(() => {})
+    async remove(row) {
+      try {
+        await this.$confirm(`确定删除题目 ${row.title} 吗?`, '提示', { type: 'warning' })
+        const client = (await import('@/api/client')).default
+        await client.get('/delQuestion', { params: { id: row.id } })
+        this.$message.success('删除成功')
+        await this.fetchPage()
+      } catch (e) {
+        if (e !== 'cancel') {
+          console.error('Error deleting question:', e)
+          this.$message.error('删除失败')
+        }
+      }
     },
     addOption() {
       const v = (this.optionInput || '').trim()
@@ -166,23 +200,28 @@ export default {
       const removed = this.form.options.splice(i, 1)[0]
       if (this.form.answer === removed) this.form.answer = ''
     },
-    submit() {
-      this.$refs.qForm.validate(ok => {
+    async submit() {
+      this.$refs.qForm.validate(async ok => {
         if (!ok) return
         if (!this.form.options.includes(this.form.answer)) {
           this.$message.error('答案必须在选项中')
           return
         }
-        if (this.isEdit && this.form.id != null) {
-          const idx = this.questions.findIndex(q => q.id === this.form.id)
-          if (idx !== -1) this.$set(this.questions, idx, { ...this.form })
-        } else {
-          const nextId = (this.questions[this.questions.length - 1]?.id || 0) + 1
-          this.questions.unshift({ ...this.form, id: nextId })
+        try {
+          const payload = { title: this.form.title, options: this.form.options, answer: this.form.answer }
+          const client = (await import('@/api/client')).default
+          if (this.isEdit && this.form.id != null) {
+            await client.put('/updateQuestion', { ...payload, id: this.form.id })
+          } else {
+            await client.post('/addQuestion', payload)
+          }
+          this.dialogVisible = false
+          this.$message.success(this.isEdit ? '更新成功' : '添加成功')
+          await this.fetchPage()
+        } catch (err) {
+          console.error('Error saving question:', err)
+          this.$message.error('保存失败')
         }
-        this.dialogVisible = false
-        this.query()
-        this.$message.success(this.isEdit ? '更新成功' : '添加成功')
       })
     },
     exportQuestions() {

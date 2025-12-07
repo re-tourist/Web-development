@@ -46,7 +46,7 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { chat, initRoom } from '../api/index.js'
+import { chat } from '../api/index.js'
 import { loadHistory, saveConversation, findConversation, deleteConversation } from '../utils/storage.js'
 
 const route = useRoute()
@@ -69,20 +69,16 @@ onMounted(() => {
   if (saved) {
     messages.value = saved.messages || []
     ended.value = !!saved.ended
+    // 若有历史消息，视为已开始；否则等待“开始”按钮
+    started.value = !ended.value && messages.value.length > 0
   } else {
-    // 首次进入房间：尝试接受模型的开场白；失败则提示“开始”即可开启
-    fetchOpening(roomId.value)
+    // 不再主动触发开场白，等待用户点击“开始”
+    started.value = false
+    ended.value = false
   }
 })
 
-async function fetchOpening(id) {
-  try {
-    const res = await initRoom(id)
-    append('ai', res.text, res.ended)
-  } catch (e) {
-    messages.value.push({ id: Date.now()+'greet', role: 'ai', text: '欢迎来到脑筋急转弯房间。输入“开始”即可开启对话。' })
-  }
-}
+// 取消自动开场逻辑：等待“开始”按钮触发真正的对话
 
 function append(role, text, isEnded=false) {
   messages.value.push({ id: Date.now()+Math.random(), role, text })
@@ -103,7 +99,6 @@ async function onNewConversation() {
   messages.value = []
   started.value = false
   ended.value = false
-  await fetchOpening(id)
 }
 
 async function onSend() {

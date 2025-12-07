@@ -16,8 +16,8 @@ http.interceptors.response.use(
 // Normalize backend string -> front-end message shape
 function normalize(text) {
   const s = String(text || '')
-  const ended = /游戏已结束|结束/.test(s)
-  return { role: 'ai', text: s, ended }
+  // 不再根据文本自动判定结束，由前端“结束”按钮控制
+  return { role: 'ai', text: s, ended: false }
 }
 
 // Backend: POST /api/chat/{roomId}/chat?userPrompt=...
