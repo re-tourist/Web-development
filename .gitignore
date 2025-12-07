@@ -1,25 +1,28 @@
-# Node
-node_modules/
-dist/
-.vite-cache/
-.cache/
+# Top-level ignore for Web development monorepo
 
-# Java / Maven
-target/
-*.class
+# Node modules
+**/node_modules/
+
+# Build outputs
+**/dist/
+**/build/
+**/target/
+
+# Logs and temp
 *.log
-*.iml
-*.jar
-*.war
-.mvn/
+*.tmp
+tmp/
 
-# IDE
-.idea/
-.vscode/
-*.swp
+# Archives
+*.zip
+*.7z
+*.rar
 
-# Misc
-coverage/
+# Local caches
+.cache/
+**/.vite/
+**/.next/
+
+# OS files
 .DS_Store
 Thumbs.db
-
